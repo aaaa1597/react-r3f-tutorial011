@@ -5,7 +5,12 @@ import * as THREE from 'three'
 import { OrbitControls } from '@react-three/drei'
 import { useControls } from 'leva'
 
-const Box = (props: MeshProps) => {
+type BoxProps = Omit<MeshProps, string> & {
+  color?: string;
+  props: MeshProps;
+}
+
+const Box = (boxprops: BoxProps) => {
   const ref = useRef<THREE.Mesh>(null!)
 
   useFrame((_, delta) => {
@@ -15,9 +20,9 @@ const Box = (props: MeshProps) => {
   })
 
   return (
-    <mesh {...props} ref={ref}>
+    <mesh {...boxprops.props} ref={ref}>
       <boxGeometry />
-      <meshBasicMaterial color={0x00ff00} wireframe />
+      <meshBasicMaterial color={boxprops.color} wireframe />
     </mesh>
   )
 }
@@ -41,8 +46,8 @@ const App = () => {
       <Canvas camera={{ position: [3, 1, 2] }}>
         <ambientLight />
         <directionalLight />
-        <Box position={[-0.75, 0, 0]} name="A" rotation={[pA.x, pA.y, pA.z]} visible={pA.visible}/>
-        <Box position={[0.75, 0, 0]} name="B" rotation={[pB.x, pB.y, pB.z]} visible={pB.visible}/>
+        <Box color={pA.color} props={{position:[-0.75, 0, 0], name:"A", rotation:[pA.x, pA.y, pA.z], visible:pA.visible}} />
+        <Box color={pB.color} props={{position:[ 0.75, 0, 0], name:"B", rotation:[pB.x, pB.y, pB.z], visible:pB.visible}}/> 
         <OrbitControls target-y={1}/>
         <axesHelper args={[5]} />
         <gridHelper args={[10,10]} />
